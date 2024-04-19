@@ -3,26 +3,47 @@
 #include<thread>
 #include<ftxui/dom/elements.hpp>
 #include<ftxui/screen/screen.hpp>
+#include<ftxui/screen/string.hpp>
+#include<ftxui/screen/terminal.hpp>
+#include<fstream>
 
 using namespace std;
 using namespace ftxui;
 
 int main(int argc, char const *argv[])
 {
-    Element lienzo = hbox({
-        spinner(21,3) | bold
-    });
+    fstream archivo;
 
-    Screen pantalla = Screen::Create(
-        Dimension::Full(),
-        Dimension::Fit(lienzo)
-    );
+    archivo.open("./assets/images/canon.txt");
+    string canon;
+    archivo >> canon;
+    archivo.close();
 
-    Render(pantalla,lienzo);
-    pantalla.Print();
-    pantalla.ResetPosition();
+    archivo.open("./assets/images/alien.txt");
+    string alien;
+    archivo.close();
 
-    this_thread::sleep_for(0.1s);
 
+    int fotograma=0;
+    while(true){
+
+        fotograma++;
+        Element tanque = text(canon) | bold | color(Color::Green1) | bgcolor(Color::Blue1) ;
+        Element personaje = spinner(21,fotograma) | bold | color(Color::Blue1) | bgcolor(Color::Green1);
+        Element lienzo = hbox({personaje , tanque});
+
+        Screen pantalla = Screen::Create(
+            Dimension::Full(),
+            Dimension::Fit(lienzo)
+             );
+
+
+
+        Render(pantalla,lienzo);
+        pantalla.Print();
+        cout<<pantalla.ResetPosition();
+
+        this_thread::sleep_for(0.1s);
+     }
     return 0;
 }
