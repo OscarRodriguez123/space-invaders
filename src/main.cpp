@@ -6,31 +6,27 @@
 #include<ftxui/screen/string.hpp>
 #include<ftxui/screen/terminal.hpp>
 #include<fstream>
+#include<Dibujo.hpp>
 
 using namespace std;
 using namespace ftxui;
 
 int main(int argc, char const *argv[])
 {
-    fstream archivo;
 
-    archivo.open("./assets/images/canon.txt");
-    string canon;
-    archivo >> canon;
-    archivo.close();
+    Dibujo dTanque("./assets/images/canon.txt");
+    Dibujo dAlien("./assets/images/alien.txt");
+    Dibujo dBloque("./assets/images/canon.txt");
 
-    archivo.open("./assets/images/alien.txt");
-    string alien;
-    archivo.close();
 
 
     int fotograma=0;
     while(true){
 
         fotograma++;
-        Element tanque = text(canon) | bold | color(Color::Green1) | bgcolor(Color::Blue1) ;
         Element personaje = spinner(21,fotograma) | bold | color(Color::Blue1) | bgcolor(Color::Green1);
-        Element lienzo = hbox({personaje , tanque});
+        Element tanque = dTanque.GetElement() | bold | color(Color::Green1) | bgcolor(Color::Blue1) ;
+        Element lienzo = hbox({personaje , tanque, dAlien.GetElement()});
 
         Screen pantalla = Screen::Create(
             Dimension::Full(),
