@@ -3,26 +3,62 @@
 #include<ftxui/dom/elements.hpp>
 #include<ftxui/screen/screen.hpp>
 #include<thread>
+#include<list>
 #include<Dibujo.hpp>
+#include<Archivo.hpp>
+#include<experimental/random>
 using namespace std;
 using namespace ftxui;
 
 
+
 int main(int argc, char const *argv[])
 { 
-    Dibujo palabra1("Hola",0,0);
-    Dibujo palabra2("Adios",5,5);
+    Archivo alien("./assets/images/alien.txt");
+
+    list<Dibujo> dibujos;
+    for (size_t i = 0; i <20; i++)
+    {
+        Dibujo d=alien.CrearDibujo();
+        d.EstablecerPosicion(experimental::randint(0,20),experimental::randint(0,20));
+       dibujos.push_back(d);
+    }
+    
+    
+
+
+    for (int i = 0; i < 20; i++)
+    {
+        list<string>c;
+        c.push_back("Personaje"+to_string(i));
+        c.push_back("  O");
+        c.push_back("--|--");
+        c.push_back(" / \\");
+
+        Dibujo contenido(c,experimental::randint(0,50),experimental::randint(0,50));
+        dibujos.push_back(contenido);
+    }
+    
 
     auto Pantalla=Screen::Create(Dimension::Full(),Dimension::Full());
 
     while(true){
+        Pantalla.Clear();
         this_thread::sleep_for(0.1s);
+        for (auto &&i : dibujos)
+        {
+            i.DesplazarX(experimental::randint(-1,1));
+            i.DesplazarY(experimental::randint(-1,1));
+        }
 
-        palabra1.Dibujar(Pantalla);
-        palabra2.Dibujar(Pantalla);
+        for (auto &&i : dibujos)
+        {
+            i.Dibujar(Pantalla);
+        }
+
 
         Pantalla.Print();
-        Pantalla.Clear();
+        
         cout<<Pantalla.ResetPosition();
     }
     return 0;
